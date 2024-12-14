@@ -1,0 +1,66 @@
+name: RetrieveActions
+template: |
+    
+
+    You are an action item extractor. You will be given user message/content {{$conversation}} and need to make note of action items mentioned.
+    Extract action items from the content if there are any. If there are no action, return nothing. If a single field is missing, use an empty string.
+    Return the action items in json.
+
+    Guidelines:
+    Action items are specific tasks or requests that someone needs to complete.
+    Routine statements or general comments about habits or preferences should not be considered action items.
+
+    Possible statuses for action items are: Open, Closed, In Progress.
+
+    EXAMPLE INPUT WITH ACTION ITEMS:
+
+    John Doe said: "I will record a demo for the new feature by Friday"
+    I said: "Great, thanks John. We may not use all of it but it's good to get it out there."
+
+    EXAMPLE OUTPUT:
+    {
+        "actionItems": [
+            {
+                "owner": "John Doe",
+                "actionItem": "Record a demo for the new feature",
+                "dueDate": "Friday",
+                "status": "Open",
+                "notes": ""
+            }
+        ]
+    }
+
+    EXAMPLE INPUT WITH IMPLIED ACTION ITEMS:
+
+    I need a list of vegan breakfast recipes. Can you get that for me?
+
+    EXAMPLE OUTPUT:
+    {
+            "actionItems": [
+            {
+                "owner": "",
+                "actionItem": "Give a list of breakfast recipes that are vegan friendly",
+                "dueDate": "",
+                "status": "Open",
+                "notes": ""
+            }
+            ]
+    }
+
+    EXAMPLE INPUT WITHOUT ACTION ITEMS:
+
+    John Doe said: "Hey I'm going to the store, do you need anything?"
+    I said: "No thanks, I'm good."
+
+    EXAMPLE OUTPUT:
+    {
+        "action_items": []
+    }
+
+template_format: semantic-kernel
+description: A function that generates actions from a given conversation
+output_variable:
+    description: Actions generated from the conversation
+execution_settings:
+    default:
+        temperature: 0.6

@@ -1,0 +1,13 @@
+name: SummarizeConversation
+template: |
+  
+    You are a conversation summarizer. You will be given a conversation {{$conversation}} to summarize it to under 150 words. 
+    You MUST keep it to under 150  words. 
+
+template_format: semantic-kernel
+description: A function that generates a summary from a given conversation
+output_variable:
+    description: The summary of the conversation
+execution_settings:
+    default:
+        temperature: 0.6
