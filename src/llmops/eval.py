@@ -1,22 +1,27 @@
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from data.transform import read_delta_table
-import pandas as pd
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score
 from deltalake import DeltaTable
 import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def run_evaluation_metrics(
         df_delta_path: str = 'data/sentiment_analsis/delta',
         df_ground_truth_path: str = 'data/sentiment_analysis/ground_truth/ground_truth.csv'
-) -> None:
+        ) -> None:
+        """
+        Produce evaluation metrics on the sentiment analysis model
+        
+        args:
+                df_delta_path: str: path to the delta table
+                df_ground_truth_path: str: path to the ground truth csv file
+
+        :return: None
+        """
+        
         df_delta = DeltaTable(df_delta_path).to_pandas()
-        #df_delta = read_delta_table('data/delta')
 
         df_ground_truth = pd.read_csv(df_ground_truth_path)
         df_merged = pd.merge(df_ground_truth, df_delta, on='file_name')
-
 
         # Extracting ground truth and predictions
         y_true = df_merged['ground_truth'].tolist()
@@ -24,7 +29,6 @@ def run_evaluation_metrics(
 
         #from ipdb import set_trace; set_trace()
 
-        # Accuracy
         # Calculate accuracy
         accuracy = accuracy_score(y_true, y_pred)
 
@@ -50,8 +54,6 @@ def run_evaluation_metrics(
         # Display the plot
         plt.tight_layout()
         plt.show()
-
-
 
         # Visualize the Classification Report using a Heatmap
         class_report = classification_report(y_true, y_pred, output_dict=True)
@@ -84,10 +86,3 @@ def run_evaluation_metrics(
         # Display the plot
         plt.show()
 
-        # Confusion Matrix
-        cm = confusion_matrix(y_true, y_pred)
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Negative', 'Neutral', 'Positive'], yticklabels=['Negative', 'Neutral', 'Positive'])
-        plt.xlabel('Predicted')
-        plt.ylabel('True')
-        plt.title('Confusion Matrix')

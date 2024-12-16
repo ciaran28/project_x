@@ -5,9 +5,89 @@ import pandas as pd
 import ast
 from rich import print
 from rich.syntax import Syntax
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
-def granualar_view_sentiment_and_actions(
+def display_correration_matrix(
+        dataset: pd.DataFrame
+        ) -> None:
+    """
+    Display a correlation matrix of a dataset.
+
+    Args:
+        dataset : pd.DataFrame
+        A pandas DataFrame containing the data.
+
+    Returns:
+    None
+    """
+
+# Compute the correlation matrix
+    corr_matrix = dataset.corr()
+
+    # Set up the matplotlib figure
+    plt.figure(figsize=(15, 12))  # Increase the figure size for readability
+
+    # Create a heatmap with annotations and rotation
+    sns.heatmap(
+        corr_matrix,
+        annot=True,        # Display correlation values
+        cmap='coolwarm',   # Choose a visually appealing colormap
+        fmt=".2f",         # Limit correlation values to 2 decimal places
+        linewidths=0.5     # Add space between cells
+    )
+
+    # Rotate x and y-axis labels for better readability
+    plt.xticks(rotation=45, ha='right', fontsize=10)
+    plt.yticks(fontsize=10)
+
+    plt.title("Correlation Matrix Heatmap", fontsize=16)
+    plt.tight_layout()  # Ensure everything fits within the figure
+    plt.show()
+
+def display_feature_importance(
+        model,
+        X: pd.DataFrame
+        ) -> None:
+    """
+    Display feature importance of a model.
+
+    Args:
+    model : object
+        A trained machine learning model.
+    X : pd.DataFrame
+        A pandas DataFrame containing the features used to train the model.
+
+    Returns:
+    None
+    """
+
+    # Plot feature importance
+    importance = model.feature_importances_
+    sorted_idx = np.argsort(importance)
+
+    plt.figure(figsize=(10, 6))
+    plt.barh(range(len(sorted_idx)), importance[sorted_idx], align='center')
+    plt.yticks(range(len(sorted_idx)), [X.columns[i] for i in sorted_idx])
+    plt.xlabel("Feature Importance")
+    plt.title("Feature Importance in XGBoost")
+    plt.show()
+    
+def display_column_count_hist(
+        source_dataset: pd.DataFrame,
+        column_name: str,
+) -> None:
+    sns.histplot(source_dataset['Age'], kde=True, stat="density", color="blue", alpha=0.6, edgecolor="black")
+    sns.kdeplot(source_dataset['Age'], color="red", linewidth=2)
+
+    plt.title(f"{column_name} Distribution")
+    plt.xlabel(column_name)
+    plt.ylabel('Density')
+    plt.show()
+
+def get_granualar_view_sentiment_and_actions(
         num_conversations: int,
         df_delta: pd.DataFrame
 ):

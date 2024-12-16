@@ -87,7 +87,11 @@ def flag_identical_files(data_folder: str) -> None:
 
 
 
-def create_delta_table(data_folder: str, output_folder: str = "data/sentiment_analysis/delta") -> None:
+def create_delta_table(
+        data_folder: str,
+        output_folder: str = "data/sentiment_analysis/delta"
+    ) -> None:
+    
     """
     Creates a Delta table with columns 'file_name' and 'file_content' from transcript files.
 
@@ -130,21 +134,42 @@ def create_delta_table(data_folder: str, output_folder: str = "data/sentiment_an
 
 
 
-def read_delta_table(output_folder: str = "data/sentiment_analysis/delta") -> pd.DataFrame:
+def read_delta_table(
+        output_folder: str = "data/sentiment_analysis/delta"
+    ) -> pd.DataFrame:
+
     """
     Reads the Delta table from the given folder.
+
+    args:
+        output_folder: str: Path to the folder where the Delta table is saved.
+    
+    returns:
+        pd.DataFrame: DataFrame containing the Delta table data
+
     """
     df = DeltaTable(output_folder).to_pandas()
     return df
 
 
-def process_transcripts(data_folder: str) -> None:
+def process_transcripts(
+        data_folder: str
+    ) -> None:
     """
-    Processes all transcript text files in the given folder by checking for identical files.
+    Processes all transcript text files in the given folder by checking for identical files. 
+    If identical files are found, they are flagged. A Delta table is then created with columns 'file_name' and 'file_content'.
 
-    :param data_folder: Path to the folder containing the transcript text files.
+    args:
+        data_folder: str: Path to the folder containing the transcript text files.
+    
+    returns:
+        None
     """
     flag_identical_files(data_folder)
-    create_delta_table(data_folder)
+    
+    create_delta_table(
+        data_folder,
+        output_folder="data/sentiment_analysis/delta"
+        )
 
 
